@@ -16,7 +16,8 @@ class App extends React.Component {
       searchQuery: '',
       cityData: '',
       displayMap: false,
-      errorMessage: false
+      errorMessage: false,
+      errorCode:''
     }
   }
 
@@ -35,16 +36,14 @@ class App extends React.Component {
         errorMessage: false
       })
     }
-    catch {
+    catch(error) {
       this.setState({
         displayMap: false,
-        errorMessage: true
+        errorMessage: true,
+        errorCode: error
       })
     }
   }
-
-
-
 
   updateSearchQuery = (event) => {
     this.setState({
@@ -95,7 +94,8 @@ class App extends React.Component {
         {this.state.errorMessage &&
 
         <Alert variant="danger">
-        Unable to GeoCode
+        Please Enter a Valid City Name, Error Code: 
+        {this.state.errorCode.response.status}
       </Alert>
         }
       </>
