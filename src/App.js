@@ -2,7 +2,9 @@ import React from 'react';
 import axios from 'axios';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import ListGroup from 'react-bootstrap/ListGroup';
+// import ListGroup from 'react-bootstrap/ListGroup';
+import Card from 'react-bootstrap/Card';
+import Alert from 'react-bootstrap/Alert';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class App extends React.Component {
@@ -11,7 +13,9 @@ class App extends React.Component {
     super(props);
     this.state = {
       searchQuery: '',
-      cityData: ''
+      cityData: '',
+      displayMap: false,
+      errorMessage: false
     }
   }
 
@@ -20,12 +24,25 @@ class App extends React.Component {
 
     let cityUrl = `https://eu1.locationiq.com/v1/search.php?key=pk.ac59253e8de69d4b78490835a252e7bb&q=${this.state.searchQuery}&format=json`;
 
-    let cityResult = await axios.get(cityUrl);
+    try {
 
-    this.setState({
-      cityData: cityResult.data[0]
-    })
+      let cityResult = await axios.get(cityUrl);
+
+      this.setState({
+        cityData: cityResult.data[0],
+        displayMap: true
+      })
+    }
+    catch {
+      this.setState({
+        displayMap: false,
+        errorMessage: true
+      })
+    }
   }
+
+
+
 
   updateSearchQuery = (event) => {
     this.setState({
@@ -47,12 +64,38 @@ class App extends React.Component {
           </Button>
         </Form>
 
-        <ListGroup>
+        {/* <ListGroup>
           <ListGroup.Item>Results</ListGroup.Item>
           <ListGroup.Item variant="primary">{this.state.cityData.display_name}</ListGroup.Item>
           <ListGroup.Item variant="secondary">{this.state.cityData.lat}</ListGroup.Item>
           <ListGroup.Item variant="success">{this.state.cityData.lon}</ListGroup.Item>
         </ListGroup>
+
+        {this.state.displayMap &&
+
+        <img src={`https://maps.locationiq.com/v3/staticmap?key=pk.ac59253e8de69d4b78490835a252e7bb&center=${this.state.cityData.lat},${this.state.cityData.lon}`} alt=''/>
+        } */}
+
+        {this.state.displayMap &&
+
+          <Card style={{ width: '18rem' }}>
+            <Card.Img variant="top" src={`https://maps.locationiq.com/v3/staticmap?key=pk.ac59253e8de69d4b78490835a252e7bb&center=${this.state.cityData.lat},${this.state.cityData.lon}`} />
+            <Card.Body>
+              <Card.Title>{this.state.cityData.display_name}</Card.Title>
+              <Card.Text>
+                {this.state.cityData.lat} <br></br>
+                {this.state.cityData.lon}
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        }
+
+        {this.state.errorMessage &&
+
+        <Alert variant="danger">
+        Unable to GeoCode
+      </Alert>
+        }
       </>
 
     );
