@@ -36,3 +36,13 @@
     transform: rotate(360deg);
   }
 }
+
+Form {
+  width: 30%;
+  margin: 50px auto;
+}
+
+.card{
+  width: 30%;
+  margin: 50px auto;
+}

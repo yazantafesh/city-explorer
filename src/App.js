@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import './App.css';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 // import ListGroup from 'react-bootstrap/ListGroup';
@@ -30,7 +31,8 @@ class App extends React.Component {
 
       this.setState({
         cityData: cityResult.data[0],
-        displayMap: true
+        displayMap: true,
+        errorMessage: false
       })
     }
     catch {
