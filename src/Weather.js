@@ -15,23 +15,35 @@ class Weather extends React.Component {
         return (
             <>
 
-                <ListGroup>
+                {this.props.showWeather &&
 
-                    <ListGroup.Item action variant="success">
-                        {this.state.weatherArray[0].date} <br></br>
-                        {this.state.weatherArray[0].description}
-                    </ListGroup.Item>
-                    <ListGroup.Item action variant="danger">
-                        {this.state.weatherArray[1].date} <br></br>
-                        {this.state.weatherArray[1].description}
-                    </ListGroup.Item>
-                    <ListGroup.Item action variant="warning">
-                        {this.state.weatherArray[2].date} <br></br>
-                        {this.state.weatherArray[2].description}
-                    </ListGroup.Item>
+                    <ListGroup>
 
-                </ListGroup>
+                        <ListGroup.Item action variant="success">
+                            {this.props.weatherData[0].date} <br></br>
+                            {this.props.weatherData[0].description}
+                        </ListGroup.Item>
+                        <ListGroup.Item action variant="danger">
+                            {this.props.weatherData[1].date} <br></br>
+                            {this.props.weatherData[1].description}
+                        </ListGroup.Item>
+                        <ListGroup.Item action variant="warning">
+                            {this.props.weatherData[2].date} <br></br>
+                            {this.props.weatherData[2].description}
+                        </ListGroup.Item>
 
+                    </ListGroup>
+                }
+                {this.props.showWeather == false &&
+
+                    <ListGroup>
+
+                        <ListGroup.Item action variant="danger">
+                            {this.props.weatherData.data}
+                        </ListGroup.Item>
+
+                    </ListGroup>
+                }
             </>
         )
     }
