@@ -19,39 +19,42 @@ class App extends React.Component {
       displayMap: false,
       errorMessage: false,
       errorCode:'',
-      weatherItem:{},
-      showWeather:false
+      weatherItem:[],
+      showWeather:false,
+      latitude:'',
+      longitude:'',
     }
   }
 
   getCity = async (event) => {
     event.preventDefault();
 
-    let serverRoute = process.env.REACT_APP_SERVER;
-
-    // const url = `${serverRoute}/weather?city=${this.state.searchQuery}&lon=${this.state.cityData.lon}&lat=${this.state.cityData.lat}`;
-   
-    const url = `http://localhost:3001/weather?city=amman&lon=35.9239625&lat=31.9515694`;
     
-    const importedData = await axios.get(url);
+    let serverRoute = process.env.REACT_APP_SERVER;
+    
 
-
+    // const url = `http://localhost:3001/weather?city=amman&lon=35.9239625&lat=31.9515694`;
+    
+    
     let cityUrl = `https://eu1.locationiq.com/v1/search.php?key=pk.ac59253e8de69d4b78490835a252e7bb&q=${this.state.searchQuery}&format=json`;
+    
       
     try {
       
-      let cityResult = await axios.get(cityUrl);
 
       
-
-      console.log(this.state.cityData);
-
+      let cityResult = await axios.get(cityUrl);
+      
+      
+ 
       this.setState({
         cityData: cityResult.data[0],
         displayMap: true,
         errorMessage: false,
-        weatherItem:importedData.data,
-        showWeather:true
+        // weatherItem:importedData.data,
+        // showWeather:true,
+        latitude: cityResult.data[0].lat,
+        longitude: cityResult.data[0].lon
       })
       
 
@@ -61,10 +64,27 @@ class App extends React.Component {
         displayMap: false,
         errorMessage: true,
         errorCode: error,
+        // showWeather:false
+      })
+    }
+    try{
+      const url = `${serverRoute}/weather?city=${this.state.searchQuery}&lon=${this.state.longitude}&lat=${this.state.latitude}`;
+      let importedData = await axios.get(url);
+      
+      this.setState({
+        weatherItem:importedData.data,
+        showWeather:true,
+        // latitude: this.state.cityData.lat,
+        // longitude: this.state.cityData.lon
+      })
+
+
+    } catch(error){
+      this.setState({
+        weatherItem:error.response,
         showWeather:false
       })
     }
-   
   }
   
   updateSearchQuery = (event) => {
@@ -109,8 +129,8 @@ class App extends React.Component {
       </Alert>
         }
 
-        {this.state.showWeather &&
-        <Weather weatherData={this.state.weatherItem}></Weather>}
+        {this.state.displayMap &&
+        <Weather weatherData={this.state.weatherItem} showWeather={this.state.showWeather}></Weather>}
       </>
 
     );
