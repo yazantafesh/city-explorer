@@ -7,7 +7,8 @@ import Card from 'react-bootstrap/Card';
 import Alert from 'react-bootstrap/Alert';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Weather from './Weather';
-import dotenv from 'dotenv';
+import Movies from './Movies';
+
 
 class App extends React.Component {
 
@@ -18,35 +19,38 @@ class App extends React.Component {
       cityData: '',
       displayMap: false,
       errorMessage: false,
-      errorCode:'',
-      weatherItem:[],
-      showWeather:false,
-      latitude:'',
-      longitude:'',
+      errorCode: '',
+      weatherItem: [],
+      showWeather: false,
+      latitude: '',
+      longitude: '',
+      moviesArr: [],
+      showMovies: false
     }
   }
 
   getCity = async (event) => {
     event.preventDefault();
 
-    
+
     let serverRoute = process.env.REACT_APP_SERVER;
-    
+
 
     // const url = `http://localhost:3001/weather?city=amman&lon=35.9239625&lat=31.9515694`;
-    
-    
-    let cityUrl = `https://eu1.locationiq.com/v1/search.php?key=pk.ac59253e8de69d4b78490835a252e7bb&q=${this.state.searchQuery}&format=json`;
-    
-      
-    try {
-      
 
-      
+
+    let cityUrl = `https://eu1.locationiq.com/v1/search.php?key=pk.ac59253e8de69d4b78490835a252e7bb&q=${this.state.searchQuery}&format=json`;
+
+
+
+    try {
+
+
+
       let cityResult = await axios.get(cityUrl);
-      
-      
- 
+
+
+
       this.setState({
         cityData: cityResult.data[0],
         displayMap: true,
@@ -56,10 +60,10 @@ class App extends React.Component {
         latitude: cityResult.data[0].lat,
         longitude: cityResult.data[0].lon
       })
-      
+
 
     }
-    catch(error) {
+    catch (error) {
       this.setState({
         displayMap: false,
         errorMessage: true,
@@ -67,26 +71,45 @@ class App extends React.Component {
         // showWeather:false
       })
     }
-    try{
+    try {
       const url = `${serverRoute}/weather?city=${this.state.searchQuery}&lon=${this.state.longitude}&lat=${this.state.latitude}`;
-      let importedData = await axios.get(url);
-      
+      let importedWeatherData = await axios.get(url);
+
       this.setState({
-        weatherItem:importedData.data,
-        showWeather:true,
+        weatherItem: importedWeatherData.data,
+        showWeather: true,
         // latitude: this.state.cityData.lat,
         // longitude: this.state.cityData.lon
       })
 
 
-    } catch(error){
+    } catch (error) {
       this.setState({
-        weatherItem:error.response,
-        showWeather:false
+        weatherItem: error.response,
+        showWeather: false
       })
     }
+
+    let movieUrl = `${serverRoute}/movie?city=${this.state.searchQuery}`;
+
+    axios
+      .get(movieUrl)
+      .then(importedMoviesData => {
+        this.setState({
+          moviesArr: importedMoviesData.data,
+          showMovies: true
+        })
+      })
+      .catch(err => {
+        this.setState({
+          showMovies: false,
+          moviesArr: err.message,
+        })
+        console.log(err.message);
+      })
+
   }
-  
+
   updateSearchQuery = (event) => {
     this.setState({
       searchQuery: event.target.value
@@ -123,14 +146,16 @@ class App extends React.Component {
 
         {this.state.errorMessage &&
 
-        <Alert variant="danger">
-        Please Enter a Valid City Name, Error Code: 
+          <Alert variant="danger">
+            Please Enter a Valid City Name, Error Code:
         {this.state.errorCode.response.status}
-      </Alert>
+          </Alert>
         }
+        {this.state.displayMap &&
+          <Weather weatherData={this.state.weatherItem} showWeather={this.state.showWeather}></Weather>}
 
         {this.state.displayMap &&
-        <Weather weatherData={this.state.weatherItem} showWeather={this.state.showWeather}></Weather>}
+          <Movies moviesData={this.state.moviesArr} showMovies={this.state.showMovies}></Movies>}
       </>
 
     );

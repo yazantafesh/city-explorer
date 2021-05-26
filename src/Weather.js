@@ -4,12 +4,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 class Weather extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            weatherArray: this.props.weatherData
-        }
-    }
+    // constructor(props) {
+    //     super(props);
+    //     this.state = {
+    //         weatherArray: this.props.weatherData
+    //     }
+    // }
 
     render() {
         return (
