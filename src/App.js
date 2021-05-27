@@ -90,23 +90,42 @@ class App extends React.Component {
       })
     }
 
-    let movieUrl = `${serverRoute}/movie?city=${this.state.searchQuery}`;
+    try{
+      let movieUrl = `${serverRoute}/movie?city=${this.state.searchQuery}`;
+      let importedMoviesData = await axios.get(movieUrl);
+      this.setState({
+              moviesArr: importedMoviesData.data,
+              showMovies: true
+            })
 
-    axios
-      .get(movieUrl)
-      .then(importedMoviesData => {
-        this.setState({
-          moviesArr: importedMoviesData.data,
-          showMovies: true
-        })
-      })
-      .catch(err => {
-        this.setState({
-          showMovies: false,
-          moviesArr: err.message,
-        })
-        console.log(err.message);
-      })
+    }catch (err){
+      this.setState({
+              showMovies: false,
+              moviesArr: err.message,
+            })
+
+    }
+
+
+
+
+
+
+    // axios
+    //   .get(movieUrl)
+    //   .then(importedMoviesData => {
+    //     this.setState({
+    //       moviesArr: importedMoviesData.data,
+    //       showMovies: true
+    //     })
+    //   })
+    //   .catch(err => {
+    //     this.setState({
+    //       showMovies: false,
+    //       moviesArr: err.message,
+    //     })
+    //     console.log(err.message);
+    //   })
 
   }
 
